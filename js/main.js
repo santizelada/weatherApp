@@ -8,6 +8,14 @@ const weatherIcon = document.querySelector(".weather-icon")
 async function checkWeather(city)
 {
     const response = await fetch(apiUrl + city + `&appid=${apiKey}`)
+    const card = document.querySelector(".card")
+
+
+    
+    card.classList.remove("hot-bg", "warm-bg", "cold-bg", "very-cold-bg");
+
+
+
 
     if (response.status == 404) {
         document.querySelector(".error").style.display = "block"
@@ -25,7 +33,29 @@ async function checkWeather(city)
     document.querySelector(".temp").innerHTML = Math.round(data.main.temp - 273.15) + "°C";
     document.querySelector(".humidity").innerHTML = data.main.humidity + "%"
     document.querySelector(".wind").innerHTML = data.wind.speed + "m/h"
+
+    const temperatureCelsius = Math.round(data.main.temp - 273.15);
     
+
+
+    if (temperatureCelsius > 25) {
+        card.classList.add("hot-bg");
+        card.classList.remove("warm-bg", "cold-bg", "very-cold-bg", "colorDefault");
+
+    } else if (temperatureCelsius > 15) {
+        card.classList.add("warm-bg");
+        card.classList.remove("hot-bg", "cold-bg", "very-cold-bg", "colorDefault");
+    } else if (temperatureCelsius > 5) {
+        card.classList.add("cold-bg");
+        card.classList.remove("hot-bg", "warm-bg", "very-cold-bg", "colorDefault");
+    } else {
+        card.classList.add("very-cold-bg");
+        card.classList.remove("hot-bg", "warm-bg", "cold-bg", "colorDefault");
+
+    }
+
+
+
     if (data.weather[0].main == "Clouds") {
         weatherIcon.src = "/img/clouds.png"
     }
@@ -54,7 +84,6 @@ async function checkWeather(city)
     document.querySelector(".error").style.display = "none"
     }
 
-
 }
 
 searchBtn.addEventListener("click", () => {
@@ -68,3 +97,5 @@ searchBox.addEventListener("keydown", function(event){
 })
 
 checkWeather()
+
+
